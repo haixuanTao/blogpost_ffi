@@ -2,6 +2,9 @@ import blogpost_ffi
 import pyarrow as pa
 import time
 import tracing
+from opentelemetry.trace.propagation.tracecontext import (
+    TraceContextTextMapPropagator,
+)
 
 pa.array([])
 value = [1] * 100_000_000
@@ -62,18 +65,21 @@ print()
 
 print(f"---Eyre error---")
 
-## This error panics the whole program and is therefore uncatachable.
+# Try:
+# array = blogpost_ffi.create_list_arrow(1)
+#
+## This error panics the whole program and is therefore uncatchable.
 ERROR_WITHOUT_EYRE = """
-thread '<unnamed>' panicked at 'called `Result::unwrap()` on an `Err` value: InvalidArgumentError("Expected 1 buffers in array of type UInt8, got 0")', src/lib.rs:77:6
+thread '<unnamed>' panicked at 'called `Result::unwrap()` on an `Err` value: PyErr { type: <class 'TypeError'>, value: TypeError('Expected instance of pyarrow.lib.Array, got builtins.int'), traceback: None }', src/lib.rs:45:62
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 Traceback (most recent call last):
-  File "/home/peter/Documents/work/blogpost_ffi/test_script.py", line 58, in <module>
-    array = blogpost_ffi.create_list_default_error(1)
-pyo3_runtime.PanicException: called `Result::unwrap()` on an `Err` value: InvalidArgumentError("Expected 1 buffers in array of type UInt8, got 0")
+  File "/home/peter/Documents/work/blogpost_ffi/test_script.py", line 79, in <module>
+    array = blogpost_ffi.create_list_arrow(1)
+pyo3_runtime.PanicException: called `Result::unwrap()` on an `Err` value: PyErr { type: <class 'TypeError'>, value: TypeError('Expected instance of pyarrow.lib.Array, got builtins.int'), traceback: None }
 """
 
 try:
-    array = blogpost_ffi.create_list_eyre(1)
+    array = blogpost_ffi.create_list_arrow_eyre(1)
 except Exception as e:
     print(f"eyre says: {e}")
 print(f"------")
@@ -151,15 +157,16 @@ print(f"---Global tracing---")
 
 
 def abc(cx):
-    context = tracing.extract_context(cx)
+    propagator = TraceContextTextMapPropagator()
+    context = propagator.extract(carrier=cx)
+
     with tracing.tracer.start_as_current_span(
-        name="root_span", context=context
+        name="Python_span", context=context
     ) as child_span:
         child_span.add_event("in Python!")
         output = {}
         tracing.propagator.inject(output)
         time.sleep(2)
-        output = tracing.serialize_context(output)
     return output
 
 
