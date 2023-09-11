@@ -118,39 +118,39 @@ print(f"------")
 print()
 
 
-## # Unbounded Memory Growth
-## print(f"---Memory Growth---")
+# Unbounded Memory Growth
+print(f"---Memory Growth---")
 
-## print(f"-->Open a Memory analyzer")
-## array = blogpost_ffi.unbounded_memory_growth()
+print(f"-->Open a Memory analyzer")
+array = blogpost_ffi.unbounded_memory_growth()
 
-## print(f"------")
-## print()
+print(f"------")
+print()
 
-## # Unbounded Memory Growth
-## print(f"---Memory Growth---")
+# Unbounded Memory Growth
+print(f"---Memory Growth---")
 
-## print(f"-->Open a Memory analyzer")
-## array = blogpost_ffi.bounded_memory_growth()
+print(f"-->Open a Memory analyzer")
+array = blogpost_ffi.bounded_memory_growth()
 
-## print(f"------")
-## print()
+print(f"------")
+print()
 
 # GIL Lock
-## print(f"---GIL Lock---")
+print(f"---GIL Lock---")
 
-## array = blogpost_ffi.gil_lock()
+array = blogpost_ffi.gil_lock()
 
-## print(f"------")
-## print()
+print(f"------")
+print()
 
-## # GIL unlock
-## print(f"---GIL Lock---")
+# GIL unlock
+print(f"---GIL Lock---")
 
-## array = blogpost_ffi.gil_unlock()
+array = blogpost_ffi.gil_unlock()
 
-## print(f"------")
-## print()
+print(f"------")
+print()
 
 # Global tracing
 print(f"---Global tracing---")

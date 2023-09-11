@@ -1,7 +1,3 @@
-import abc
-import os
-import typing
-
 from opentelemetry import trace
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
@@ -12,7 +8,6 @@ from opentelemetry.trace.propagation.tracecontext import (
 )
 
 
-CarrierT = typing.TypeVar("CarrierT")
 propagator = TraceContextTextMapPropagator()
 
 trace.set_tracer_provider(
