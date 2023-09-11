@@ -1,0 +1,19 @@
+[package]
+name = "blogpost_ffi"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "blogpost_ffi"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.19", features = ["eyre"] }
+arrow = { version = "46", features = ["pyarrow"] }
+eyre = "0.6.8"
+opentelemetry = { version = "0.20", features = ["rt-tokio", "trace"] }
+opentelemetry_sdk = { version = "0.19", features = ["rt-tokio", "trace"] }
+opentelemetry-jaeger = { version = "0.19", features = ["full"] }
+# opentelemetry-stdout = { version = "*", features = ["trace"] }
+tokio = { version = "*", features = ["full"] }
