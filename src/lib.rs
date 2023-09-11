@@ -11,8 +11,8 @@ use eyre::{Context, ContextCompat, Result};
 use opentelemetry::{global, sdk::propagation::TraceContextPropagator, trace::Tracer};
 
 use pyo3::{prelude::*, types::PyBytes};
-/// Formats the sum of two numbers as string.
 
+/// Formats the sum of two numbers as string.
 #[pyfunction]
 fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
     Ok((a + b).to_string())
@@ -44,17 +44,17 @@ fn create_list_arrow(py: Python, a: &PyAny) -> PyResult<Py<PyAny>> {
     let arraydata = arrow::array::ArrayData::from_pyarrow(a).unwrap();
 
     let buffer = arraydata.buffers()[0].as_slice();
+    let len = buffer.len();
 
     // ... Imagine some work here, similar to PyBytes...
 
     // Zero Copy Buffer reference counted
     let arc_s = Arc::new(buffer.to_vec());
     let ptr = NonNull::new(arc_s.as_ptr() as *mut _).unwrap();
-    let raw_buffer =
-        unsafe { arrow::buffer::Buffer::from_custom_allocation(ptr, 100_000_000, arc_s) };
+    let raw_buffer = unsafe { arrow::buffer::Buffer::from_custom_allocation(ptr, len, arc_s) };
     let output = arrow::array::ArrayData::try_new(
         arrow::datatypes::DataType::UInt8,
-        100_000_000,
+        len,
         None,
         0,
         vec![raw_buffer],
@@ -73,17 +73,16 @@ fn create_list_arrow_eyre(py: Python, a: &PyAny) -> Result<Py<PyAny>> {
         arrow::array::ArrayData::from_pyarrow(a).context("Could not convert arrow data")?;
 
     let buffer = arraydata.buffers()[0].as_slice();
-
+    let len = buffer.len();
     // ... Imagine some work here, similar to PyBytes...
 
     // Zero Copy Buffer reference counted
     let arc_s = Arc::new(buffer.to_vec());
     let ptr = NonNull::new(arc_s.as_ptr() as *mut _).context("Could not create pointer")?;
-    let raw_buffer =
-        unsafe { arrow::buffer::Buffer::from_custom_allocation(ptr, 100_000_000, arc_s) };
+    let raw_buffer = unsafe { arrow::buffer::Buffer::from_custom_allocation(ptr, len, arc_s) };
     let output = arrow::array::ArrayData::try_new(
         arrow::datatypes::DataType::UInt8,
-        100_000_000,
+        len,
         None,
         0,
         vec![raw_buffer],
