@@ -1,4 +1,8 @@
-# Reproduction step
+# Rust-Python Demo course
+
+This repo is the underlying implementation for the followed blogpost: https://dora.carsmos.ai/blog/rust-python
+
+# Development of this repository
 
 ```bash
 # For tracing
